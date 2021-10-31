@@ -1,6 +1,8 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@material-ui/icons";
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { sliderItems } from "../data";
+
 const Container = styled.div`
   width: 100%;
   height: 100vh;
@@ -24,10 +26,13 @@ const Arrow = styled.div`
   margin: auto;
   cursor: pointer;
   opacity: 0.5;
+  z-index: 2;
 `;
 const Wrapper = styled.div`
   height: 100%;
   display: flex;
+  transform: translateX(${(props) => props.slideIndex * -100}vw);
+  transition: all 1.5s ease;
 `;
 
 const Silde = styled.div`
@@ -35,6 +40,7 @@ const Silde = styled.div`
   height: 100vh;
   display: flex;
   align-items: center;
+  background-color: #${(props) => props.bg};
 `;
 const ImageContainer = styled.div`
   flex: 1;
@@ -66,50 +72,34 @@ const Button = styled.button`
 `;
 
 const Silder = () => {
+  const [slideIndex, setSlideIndex] = useState(0);
+  const handleClick = (direction) => {
+    if (direction === "left") {
+      setSlideIndex(slideIndex > 0 ? slideIndex - 1 : 2);
+    } else {
+      setSlideIndex(slideIndex < 2 ? slideIndex + 1 : 0);
+    }
+  };
   return (
     <Container>
-      <Arrow direction="left">
+      <Arrow direction="left" onClick={() => handleClick("left")}>
         <ArrowLeftOutlined />
       </Arrow>
-      <Wrapper>
-        <Silde bg="f5fafd">
-          <ImageContainer>
-            <Image src="https://www.expatica.com/app/uploads/sites/11/2014/05/Shopping.jpg" />
-          </ImageContainer>
-          <InfoContainer>
-            <Title>SUMMER SALE</Title>
-            <Desc>
-              DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF FOR NEW ARRIVALS .
-            </Desc>
-            <Button>SHOW NOW</Button>
-          </InfoContainer>
-        </Silde>
-        <Silde>
-          <ImageContainer>
-            <Image src="https://www.expatica.com/app/uploads/sites/11/2014/05/Shopping.jpg" />
-          </ImageContainer>
-          <InfoContainer>
-            <Title>WIMTER SALE</Title>
-            <Desc>
-              DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF FOR NEW ARRIVALS .
-            </Desc>
-            <Button>SHOW NOW</Button>
-          </InfoContainer>
-        </Silde>
-        <Silde>
-          <ImageContainer>
-            <Image src="https://www.expatica.com/app/uploads/sites/11/2014/05/Shopping.jpg" />
-          </ImageContainer>
-          <InfoContainer>
-            <Title>POPULAR SALE</Title>
-            <Desc>
-              DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF FOR NEW ARRIVALS .
-            </Desc>
-            <Button>SHOW NOW</Button>
-          </InfoContainer>
-        </Silde>
+      <Wrapper slideIndex={slideIndex}>
+        {sliderItems.map((item) => (
+          <Silde bg={item.bg}>
+            <ImageContainer>
+              <Image src={item.img} />
+            </ImageContainer>
+            <InfoContainer>
+              <Title>{item.title}</Title>
+              <Desc>{item.desc}</Desc>
+              <Button>SHOW NOW</Button>
+            </InfoContainer>
+          </Silde>
+        ))}
       </Wrapper>
-      <Arrow direction="right">
+      <Arrow direction="right" onClick={() => handleClick("right")}>
         <ArrowRightOutlined />
       </Arrow>
     </Container>
